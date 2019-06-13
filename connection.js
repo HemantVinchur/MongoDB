@@ -1,36 +1,34 @@
+
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-const express = require('express')
+
 // Connection URL
-const url = 'mongodb://localhost:27017/edx-course-db';
-let app = express()
+const url = 'mongodb://localhost:27017';
+
 // Database Name
-const dbName = 'edx-course-db';
+const dbName = 'myproject';
 
 // Create a new MongoClient
 const client = new MongoClient(url);
 
 // Use connect method to connect to the Server
-client.connect(function(err) {
+client.connect(function (err, client) {
   assert.equal(null, err);
-  console.log("Connected successfully to server");
-  console.log(dbName);
-//   console.log(app);
+  console.log("Connected correctly to server");
 
-   const db = client.db(dbName);
-  // let user = require('/accounts');
-  MongoClient.connect(url, function(err, db) {
-    // console.log(req);
-     let newAccount = req.body
-     var myobj = { name: "Company Inc", address: "Highway 37" };
-     db.collection('accounts').insert(myobj, (error, results) => {
-         if (error) return next(error)
-         res.send(results)
-     })
- })
+  const db = client.db(dbName);
 
-  client.close();
+  // Insert a single document
+  db.collection('inserts').insertOne({ a: 1 }, function (err, r) {
+    assert.equal(null, err);
+    assert.equal(1, r.insertedCount);
+
+    // Insert multiple documents
+    db.collection('inserts').insertMany([{ a: 2 }, { a: 3 }], function (err, r) {
+      assert.equal(null, err);
+      assert.equal(2, r.insertedCount);
+      console.log(r);
+      client.close();
+    });
+  });
 });
-
-
-app.listen(3000)
