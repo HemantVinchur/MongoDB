@@ -3,7 +3,8 @@ const logger = require('morgan')
 const errorhandler = require('errorhandler')
 const mongodb = require('mongodb')
 const bodyParser = require('body-parser')
-
+const cors = require('cors')
+const path = require('path')
 const MongoClient = require('MongoDB').MongoClient
 const assert = require('assert');
 const url = 'mongodb://localhost:27017';
@@ -11,13 +12,19 @@ const dbName = 'myproject1';
 const client = new MongoClient(url);
 
 let app = express()
-
+app.use(cors());
 app.use(express.urlencoded({extended:true}));
 app.use(logger('dev'))
 app.use(bodyParser.json())
 
-client.connect((error) => {
+app.get('/index.html', (req, res) => {
+    res.sendFile(path.join(_dirname,'index.html'))
+        })
 
+
+client.connect((error) => {
+     console.log('123')
+     console.log(error)
     if (error) return process.exit(1)
     console.log('sucessful');
     const db = client.db(dbName);

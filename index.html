@@ -21,7 +21,7 @@
     }
 body={
   method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  mode:'no-cors',
+  mode:'cors',
   headers:{
     'Content-Type':'application/json'
   },
@@ -38,10 +38,24 @@ body={
  
     
 
-      fetch(url,body) 
-    .then(response => console.log(response)
-    );
-    }
+      fetch(url, body).then(
+       function (response) {
+         console.log(response.headers.get('Content-Type'));
+         if (response.status !== 200) {
+           console.log('Looks like there was a problem. Status Code: ' +
+             response.status);
+           return;
+         }
+
+         // Examine the text in the response
+         response.json().then(function (data) {
+           console.log(data);
+         });
+       })
+       .catch(function (err) {
+         console.log('Fetch Error :-S', err);
+       });
+   }
     
 var request = new XMLHttpRequest()
 var url = 'http://localhost:4000/accounts';
